@@ -25,7 +25,6 @@ class CanvasViewController: UIViewController {
     var newlyCreatedFace: UIImageView!
     var newlyCreatedFaceOriginalCenter: CGPoint!
     let trayDownOffset = 215.0
-    var translation: CGPoint!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,7 +41,7 @@ class CanvasViewController: UIViewController {
     }
 
     @IBAction func onTrayPan(_ sender: UIPanGestureRecognizer) {
-        self.translation = sender.translation(in: view)
+        let translation = sender.translation(in: view)
         let velocity = sender.velocity(in: view)
         if sender.state == .began {
             // When dragging begins, save where the center was (or started)
@@ -71,10 +70,28 @@ class CanvasViewController: UIViewController {
         }
     }
     
+    @objc func handlePan(sender: UIPanGestureRecognizer) {
+        let location = sender.location(in: view)
+        let velocity = sender.velocity(in: view)
+        let translation = sender.translation(in: view)
+        let emojiImageView = sender.view
+        if sender.state == .began {
+            sender.view?.center
+        }
+        if sender.state == .changed {
+            
+        }
+        if sender.state == .ended {
+            
+        }
+    }
+    
     @IBAction func didPanFace(_ sender: UIPanGestureRecognizer) {
-        self.translation = sender.translation(in: view)
+        let translation = sender.translation(in: view)
         if sender.state == .began {
             var imageView = sender.view as! UIImageView
+            let panGesture = UIPanGestureRecognizer(target: self, action: #selector(CanvasViewController.handlePan(sender:)))
+            imageView.addGestureRecognizer(panGesture)
             newlyCreatedFace = UIImageView(image: imageView.image)
             view.addSubview(newlyCreatedFace)
             newlyCreatedFace.center = imageView.center
